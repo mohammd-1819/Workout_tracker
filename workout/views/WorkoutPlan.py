@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from workout.models.WorkoutPlan import WorkoutPlan
-from workout.serializers import WorkoutPlanSerializer
+from workout.serializers.workout_plan_serializer import WorkoutPlanSerializer
 from workout.utility.permissions import IsWorkoutPlanOwner
 from workout.utility.pagination import StandardResultSetPagination
 
@@ -46,6 +46,23 @@ class WorkoutPlanListView(APIView, StandardResultSetPagination):
 
     def get(self, request):
         workout_plans = WorkoutPlan.objects.filter(user=request.user)
+
+        # filter
+        name = request.query_params.get('name')
+        if name:
+            workout_plans = workout_plans.filter(name__icontains=name)
+
+        email = request.query_params.get('user')
+        if email:
+            workout_plans = workout_plans.filter(user__email__icontains=email)
+
         result = self.paginate_queryset(workout_plans, request)
         serializer = WorkoutPlanSerializer(result, many=True)
         return self.get_paginated_response(serializer.data)
+
+
+class WorkoutPlanDetailView(APIView):
+    def get(self, request, pk):
+        workout_plan = get_object_or_404(WorkoutPlan, id=pk, user=request.user)
+        serializer = WorkoutPlanSerializer(instance=workout_plan)
+        return Response(serializer.data, status=status.HTTP_200_OK)

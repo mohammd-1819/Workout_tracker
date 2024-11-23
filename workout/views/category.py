@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from workout.models.category import Category
-from workout.serializers import CategorySerializer
+from workout.serializers.exercise_serializer import CategorySerializer
 from workout.utility.pagination import StandardResultSetPagination
 from workout.utility.permissions import IsReadOnlyUser
 

@@ -11,3 +11,8 @@ class IsReadOnlyUser(BasePermission):
 class IsWorkoutPlanOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user
+
+
+class IsProgressOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user
